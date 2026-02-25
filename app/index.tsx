@@ -17,6 +17,10 @@ export default function Home() {
     init();
   }, []);
 
+  const deleteHabit = (id: string) => {
+    setHabits((prev) => prev.filter((h) => h.id !== id));
+  };
+
   useEffect(() => {
     saveHabits(habits);
   }, [habits]);
@@ -34,6 +38,7 @@ export default function Home() {
               prev.map((h) => (h.id === updatedHabit.id ? updatedHabit : h)),
             );
           }}
+          onDelete={deleteHabit}
         />
       ))}
 

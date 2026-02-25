@@ -1,15 +1,18 @@
 import { Habit } from "@/types/habit";
 import { calculateStreak } from "@/utils/date";
-import { ScrollView, Text, View } from "react-native";
+import { Pressable, ScrollView, Text, View } from "react-native";
+import { Swipeable } from "react-native-gesture-handler";
 import HabitGrid from "./HabitGrid";
 
 type Props = {
   habit: Habit;
   onUpdate: (habit: Habit) => void;
+  onDelete: (id: string) => void;
 };
 
-export default function HabitCard({ habit, onUpdate }: Props) {
+export default function HabitCard({ habit, onUpdate, onDelete }: Props) {
   const streak = calculateStreak(habit.records);
+
   const toggleDate = (date: string) => {
     const exists = habit.records.includes(date);
 
@@ -23,47 +26,67 @@ export default function HabitCard({ habit, onUpdate }: Props) {
     onUpdate(updatedHabit);
   };
 
-  return (
-    <View
-      style={{
-        marginVertical: 15,
-        padding: 15,
-        backgroundColor: "#111",
-        borderRadius: 12,
-      }}
-    >
-      <View
+  const renderRightActions = () => {
+    return (
+      <Pressable
+        onPress={() => onDelete(habit.id)}
         style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
+          backgroundColor: "#ef4444",
+          justifyContent: "center",
           alignItems: "center",
-          marginBottom: 10,
+          width: 100,
+          borderRadius: 12,
+          marginVertical: 15,
         }}
       >
-        <Text
-          style={{
-            color: "white",
-            fontSize: 18,
-            fontWeight: "600",
-          }}
-        >
-          {habit.name}
-        </Text>
+        <Text style={{ color: "white", fontWeight: "600" }}>Eliminar</Text>
+      </Pressable>
+    );
+  };
 
-        <Text
+  return (
+    <Swipeable renderRightActions={renderRightActions}>
+      <View
+        style={{
+          marginVertical: 15,
+          padding: 15,
+          backgroundColor: "#111",
+          borderRadius: 12,
+        }}
+      >
+        <View
           style={{
-            color: "#22c55e",
-            fontSize: 14,
-            fontWeight: "500",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: 10,
           }}
         >
-          🔥 {streak}
-        </Text>
+          <Text
+            style={{
+              color: "white",
+              fontSize: 18,
+              fontWeight: "600",
+            }}
+          >
+            {habit.name}
+          </Text>
+
+          <Text
+            style={{
+              color: "#22c55e",
+              fontSize: 14,
+              fontWeight: "500",
+            }}
+          >
+            🔥 {streak}
+          </Text>
+        </View>
+
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <HabitGrid records={habit.records} onToggle={toggleDate} />
+        </ScrollView>
       </View>
-
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        <HabitGrid records={habit.records} onToggle={toggleDate} />
-      </ScrollView>
-    </View>
+    </Swipeable>
   );
 }
