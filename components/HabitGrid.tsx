@@ -1,4 +1,5 @@
 import { generateLastSixMonths, groupByWeeks } from "@/utils/date";
+import * as Haptics from "expo-haptics";
 import { Pressable, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -55,7 +56,11 @@ function AnimatedCell({
     transform: [{ scale: scale.value }],
   }));
 
-  const handlePress = () => {
+  const handlePress = async () => {
+    // Haptic feedback ligero
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+
+    // Animación
     scale.value = withSpring(1.25, { damping: 8 }, () => {
       scale.value = withSpring(1);
     });
