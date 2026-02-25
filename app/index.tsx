@@ -1,3 +1,4 @@
+import AddHabitModal from "@/components/AddHabitModal";
 import HabitCard from "@/components/HabitCard";
 import { Habit } from "@/types/habit";
 import { loadHabits, saveHabits } from "@/utils/storage";
@@ -6,6 +7,7 @@ import { Button, ScrollView, Text } from "react-native";
 
 export default function Home() {
   const [habits, setHabits] = useState<Habit[]>([]);
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     const init = async () => {
@@ -35,15 +37,18 @@ export default function Home() {
         />
       ))}
 
-      <Button
-        title="Agregar hábito"
-        onPress={() => {
+      <Button title="Agregar hábito" onPress={() => setModalVisible(true)} />
+      <AddHabitModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        onCreate={(name) => {
           const newHabit: Habit = {
             id: Date.now().toString(),
-            name: "Nuevo hábito",
+            name,
             createdAt: new Date().toISOString(),
             records: [],
           };
+
           setHabits((prev) => [...prev, newHabit]);
         }}
       />
