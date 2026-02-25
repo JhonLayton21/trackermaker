@@ -2,8 +2,9 @@ import AddHabitModal from "@/components/AddHabitModal";
 import HabitCard from "@/components/HabitCard";
 import { Habit } from "@/types/habit";
 import { loadHabits, saveHabits } from "@/utils/storage";
+import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
-import { Button, ScrollView, Text } from "react-native";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 export default function Home() {
   const [habits, setHabits] = useState<Habit[]>([]);
@@ -17,32 +18,72 @@ export default function Home() {
     init();
   }, []);
 
-  const deleteHabit = (id: string) => {
-    setHabits((prev) => prev.filter((h) => h.id !== id));
-  };
-
   useEffect(() => {
     saveHabits(habits);
   }, [habits]);
 
+  const deleteHabit = (id: string) => {
+    setHabits((prev) => prev.filter((h) => h.id !== id));
+  };
+
   return (
-    <ScrollView style={{ padding: 20 }}>
-      <Text style={{ fontSize: 24, fontWeight: "bold" }}>Habit Tracker</Text>
-
-      {habits.map((habit) => (
-        <HabitCard
-          key={habit.id}
-          habit={habit}
-          onUpdate={(updatedHabit) => {
-            setHabits((prev) =>
-              prev.map((h) => (h.id === updatedHabit.id ? updatedHabit : h)),
-            );
+    <View style={{ flex: 1, backgroundColor: "#000" }}>
+      <ScrollView
+        contentContainerStyle={{
+          padding: 20,
+          paddingBottom: 120,
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 24,
+            fontWeight: "bold",
+            color: "white",
+            marginBottom: 20,
           }}
-          onDelete={deleteHabit}
-        />
-      ))}
+        >
+          Habit Tracker
+        </Text>
 
-      <Button title="Agregar hábito" onPress={() => setModalVisible(true)} />
+        {habits.map((habit) => (
+          <HabitCard
+            key={habit.id}
+            habit={habit}
+            onUpdate={(updatedHabit) => {
+              setHabits((prev) =>
+                prev.map((h) => (h.id === updatedHabit.id ? updatedHabit : h)),
+              );
+            }}
+            onDelete={deleteHabit} // 🔥 IMPORTANTE
+          />
+        ))}
+      </ScrollView>
+
+      {/* FAB */}
+      <TouchableOpacity
+        onPress={() => setModalVisible(true)}
+        activeOpacity={0.8}
+        style={{
+          position: "absolute",
+          bottom: 30,
+          right: 25,
+          width: 60,
+          height: 60,
+          borderRadius: 30,
+          backgroundColor: "#22c55e",
+          justifyContent: "center",
+          alignItems: "center",
+
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 5 },
+          shadowOpacity: 0.3,
+          shadowRadius: 5,
+          elevation: 6,
+        }}
+      >
+        <Ionicons name="add" size={32} color="white" />
+      </TouchableOpacity>
+
       <AddHabitModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
@@ -57,6 +98,6 @@ export default function Home() {
           setHabits((prev) => [...prev, newHabit]);
         }}
       />
-    </ScrollView>
+    </View>
   );
 }
