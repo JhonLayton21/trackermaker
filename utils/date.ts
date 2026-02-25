@@ -1,12 +1,12 @@
-export function generateYearDates() {
-  const year = new Date().getFullYear();
-  const start = new Date(year, 0, 1);
-  const end = new Date(year, 11, 31);
+export function generateLastSixMonths() {
+  const today = new Date();
+  const sixMonthsAgo = new Date();
+  sixMonthsAgo.setMonth(today.getMonth() - 6);
 
-  const dates = [];
-  const current = new Date(start);
+  const dates: Date[] = [];
+  const current = new Date(sixMonthsAgo);
 
-  while (current <= end) {
+  while (current <= today) {
     dates.push(new Date(current));
     current.setDate(current.getDate() + 1);
   }

@@ -1,5 +1,5 @@
 import { Habit } from "@/types/habit";
-import { Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 import HabitGrid from "./HabitGrid";
 
 type Props = {
@@ -30,11 +30,19 @@ export default function HabitCard({ habit, onUpdate }: Props) {
         borderRadius: 12,
       }}
     >
-      <Text style={{ color: "white", fontSize: 18, marginBottom: 10 }}>
+      <Text
+        style={{
+          color: "white",
+          fontSize: 18,
+          marginBottom: 10,
+        }}
+      >
         {habit.name}
       </Text>
 
-      <HabitGrid records={habit.records} onToggle={toggleDate} />
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        <HabitGrid records={habit.records} onToggle={toggleDate} />
+      </ScrollView>
     </View>
   );
 }

@@ -1,4 +1,4 @@
-import { generateYearDates, groupByWeeks } from "@/utils/date";
+import { generateLastSixMonths, groupByWeeks } from "@/utils/date";
 import { Pressable, View } from "react-native";
 
 type Props = {
@@ -7,7 +7,7 @@ type Props = {
 };
 
 export default function HabitGrid({ records, onToggle }: Props) {
-  const dates = generateYearDates();
+  const dates = generateLastSixMonths();
   const weeks = groupByWeeks(dates);
 
   const isCompleted = (date: Date) => {
