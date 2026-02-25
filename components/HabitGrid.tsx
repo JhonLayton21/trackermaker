@@ -1,56 +1,44 @@
-import { Habit } from "@/types/habit";
-import { format, subDays } from "date-fns";
+import { generateYearDates, groupByWeeks } from "@/utils/date";
 import { Pressable, View } from "react-native";
 
 type Props = {
-  habit: Habit;
-  onUpdate: (habit: Habit) => void;
+  records: string[];
+  onToggle: (date: string) => void;
 };
 
-export default function HabitGrid({ habit, onUpdate }: Props) {
-  const days = Array.from({ length: 30 }).map((_, i) =>
-    format(subDays(new Date(), i), "yyyy-MM-dd"),
-  );
+export default function HabitGrid({ records, onToggle }: Props) {
+  const dates = generateYearDates();
+  const weeks = groupByWeeks(dates);
 
-  const toggleDay = (date: string) => {
-    const exists = habit.records.find((r) => r.date === date);
-
-    let updated;
-
-    if (exists) {
-      updated = habit.records.filter((r) => r.date !== date);
-    } else {
-      updated = [...habit.records, { date, completed: true }];
-    }
-
-    onUpdate({ ...habit, records: updated });
+  const isCompleted = (date: Date) => {
+    const iso = date.toISOString().split("T")[0];
+    return records.includes(iso);
   };
 
   return (
-    <View
-      style={{
-        flexDirection: "row",
-        flexWrap: "wrap",
-        marginTop: 10,
-      }}
-    >
-      {days.map((date) => {
-        const completed = habit.records.some((r) => r.date === date);
+    <View style={{ flexDirection: "row" }}>
+      {weeks.map((week, i) => (
+        <View key={i}>
+          {week.map((date) => {
+            const iso = date.toISOString().split("T")[0];
+            const completed = isCompleted(date);
 
-        return (
-          <Pressable
-            key={date}
-            onPress={() => toggleDay(date)}
-            style={{
-              width: 20,
-              height: 20,
-              margin: 3,
-              borderRadius: 4,
-              backgroundColor: completed ? "#22c55e" : "#333",
-            }}
-          />
-        );
-      })}
+            return (
+              <Pressable
+                key={iso}
+                onPress={() => onToggle(iso)}
+                style={{
+                  width: 14,
+                  height: 14,
+                  margin: 2,
+                  borderRadius: 3,
+                  backgroundColor: completed ? "#22c55e" : "#2c2c2e",
+                }}
+              />
+            );
+          })}
+        </View>
+      ))}
     </View>
   );
 }

@@ -8,6 +8,19 @@ type Props = {
 };
 
 export default function HabitCard({ habit, onUpdate }: Props) {
+  const toggleDate = (date: string) => {
+    const exists = habit.records.includes(date);
+
+    const updatedHabit: Habit = {
+      ...habit,
+      records: exists
+        ? habit.records.filter((d) => d !== date)
+        : [...habit.records, date],
+    };
+
+    onUpdate(updatedHabit);
+  };
+
   return (
     <View
       style={{
@@ -17,9 +30,11 @@ export default function HabitCard({ habit, onUpdate }: Props) {
         borderRadius: 12,
       }}
     >
-      <Text style={{ color: "white", fontSize: 18 }}>{habit.name}</Text>
+      <Text style={{ color: "white", fontSize: 18, marginBottom: 10 }}>
+        {habit.name}
+      </Text>
 
-      <HabitGrid habit={habit} onUpdate={onUpdate} />
+      <HabitGrid records={habit.records} onToggle={toggleDate} />
     </View>
   );
 }
