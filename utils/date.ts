@@ -35,3 +35,30 @@ export function groupByWeeks(dates: Date[]) {
 
   return weeks;
 }
+
+export function calculateStreak(records: string[]) {
+  if (!records.length) return 0;
+
+  const sorted = [...records].sort().reverse();
+  let streak = 0;
+
+  const today = new Date();
+  let current = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate(),
+  );
+
+  while (true) {
+    const iso = current.toISOString().split("T")[0];
+
+    if (sorted.includes(iso)) {
+      streak++;
+      current.setDate(current.getDate() - 1);
+    } else {
+      break;
+    }
+  }
+
+  return streak;
+}
