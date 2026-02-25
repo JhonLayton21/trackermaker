@@ -1,5 +1,10 @@
 import { generateLastSixMonths, groupByWeeks } from "@/utils/date";
 import { Pressable, View } from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
 
 type Props = {
   records: string[];
@@ -24,21 +29,54 @@ export default function HabitGrid({ records, onToggle }: Props) {
             const completed = isCompleted(date);
 
             return (
-              <Pressable
+              <AnimatedCell
                 key={iso}
+                completed={completed}
                 onPress={() => onToggle(iso)}
-                style={{
-                  width: 14,
-                  height: 14,
-                  margin: 2,
-                  borderRadius: 3,
-                  backgroundColor: completed ? "#22c55e" : "#2c2c2e",
-                }}
               />
             );
           })}
         </View>
       ))}
     </View>
+  );
+}
+
+function AnimatedCell({
+  completed,
+  onPress,
+}: {
+  completed: boolean;
+  onPress: () => void;
+}) {
+  const scale = useSharedValue(1);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }));
+
+  const handlePress = () => {
+    scale.value = withSpring(1.25, { damping: 8 }, () => {
+      scale.value = withSpring(1);
+    });
+
+    onPress();
+  };
+
+  return (
+    <Pressable onPress={handlePress}>
+      <Animated.View
+        style={[
+          {
+            width: 14,
+            height: 14,
+            margin: 2,
+            borderRadius: 3,
+            backgroundColor: completed ? "#22c55e" : "#2c2c2e",
+          },
+          animatedStyle,
+        ]}
+      />
+    </Pressable>
   );
 }
