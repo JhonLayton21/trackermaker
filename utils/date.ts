@@ -1,12 +1,12 @@
-export function generateLastSixMonths() {
+export function generateSixMonthRange() {
   const today = new Date();
-  const sixMonthsAgo = new Date();
-  sixMonthsAgo.setMonth(today.getMonth() - 6);
+  const start = new Date(today.getFullYear(), today.getMonth() - 3, 1);
+  const end = new Date(today.getFullYear(), today.getMonth() + 4, 0);
 
   const dates: Date[] = [];
-  const current = new Date(sixMonthsAgo);
+  const current = new Date(start);
 
-  while (current <= today) {
+  while (current <= end) {
     dates.push(new Date(current));
     current.setDate(current.getDate() + 1);
   }
@@ -19,7 +19,7 @@ export function groupByWeeks(dates: Date[]) {
   let week: Date[] = [];
 
   dates.forEach((date) => {
-    const day = date.getDay(); // 0 domingo
+    const day = date.getDay();
 
     if (day === 1 && week.length) {
       weeks.push(week);
@@ -61,4 +61,14 @@ export function calculateStreak(records: string[]) {
   }
 
   return streak;
+}
+
+export function isToday(date: Date) {
+  const today = new Date();
+
+  return (
+    date.getFullYear() === today.getFullYear() &&
+    date.getMonth() === today.getMonth() &&
+    date.getDate() === today.getDate()
+  );
 }
