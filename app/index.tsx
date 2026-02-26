@@ -1,4 +1,5 @@
 import AddHabitModal from "@/components/AddHabitModal";
+import DeleteSlider from "@/components/DeleteSlider";
 import HabitCard from "@/components/HabitCard";
 import { Habit } from "@/types/habit";
 import { loadHabits, saveHabits } from "@/utils/storage";
@@ -9,6 +10,7 @@ import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 export default function Home() {
   const [habits, setHabits] = useState<Habit[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [habitToDelete, setHabitToDelete] = useState<Habit | null>(null);
 
   useEffect(() => {
     const init = async () => {
@@ -54,7 +56,10 @@ export default function Home() {
                 prev.map((h) => (h.id === updatedHabit.id ? updatedHabit : h)),
               );
             }}
-            onDelete={deleteHabit} // 🔥 IMPORTANTE
+            onDelete={deleteHabit}
+            onLongPress={(habit) => {
+              setHabitToDelete(habit);
+            }}
           />
         ))}
       </ScrollView>
@@ -98,6 +103,16 @@ export default function Home() {
           setHabits((prev) => [...prev, newHabit]);
         }}
       />
+
+      {habitToDelete && (
+        <DeleteSlider
+          onConfirm={() => {
+            deleteHabit(habitToDelete.id);
+            setHabitToDelete(null);
+          }}
+          onCancel={() => setHabitToDelete(null)}
+        />
+      )}
     </View>
   );
 }

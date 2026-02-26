@@ -1,4 +1,4 @@
-import { generateSixMonthRange, groupByWeeks } from "@/utils/date";
+import { generateSixMonthRange } from "@/utils/date";
 import * as Haptics from "expo-haptics";
 import { Pressable, Text, View } from "react-native";
 import Animated, {
@@ -14,20 +14,16 @@ type Props = {
 
 export default function HabitGrid({ records, onToggle }: Props) {
   const dates = generateSixMonthRange();
-  const weeks = groupByWeeks(dates);
 
-  // 🔥 Agrupar semanas por mes
-  const monthsMap: { [key: string]: typeof weeks } = {};
+  // 🔥 Agrupar por mes REAL
+  const monthsMap: { [key: string]: Date[] } = {};
 
-  weeks.forEach((week) => {
-    const firstDateOfWeek = week[0];
-    const monthKey = firstDateOfWeek.toISOString().slice(0, 7); // YYYY-MM
-
-    if (!monthsMap[monthKey]) {
-      monthsMap[monthKey] = [];
+  dates.forEach((date) => {
+    const key = `${date.getFullYear()}-${date.getMonth()}`;
+    if (!monthsMap[key]) {
+      monthsMap[key] = [];
     }
-
-    monthsMap[monthKey].push(week);
+    monthsMap[key].push(date);
   });
 
   const isCompleted = (date: Date) => {
@@ -37,44 +33,59 @@ export default function HabitGrid({ records, onToggle }: Props) {
 
   return (
     <View style={{ flexDirection: "row" }}>
-      {Object.entries(monthsMap).map(([monthKey, monthWeeks]) => {
-        const monthName = new Date(monthKey + "-01").toLocaleString("default", {
+      {Object.entries(monthsMap).map(([monthKey, monthDates]) => {
+        const firstDay = monthDates[0];
+        const monthName = firstDay.toLocaleString("default", {
           month: "short",
         });
 
+        // 🔥 Padding antes del primer día
+        const startDay = new Date(
+          firstDay.getFullYear(),
+          firstDay.getMonth(),
+          1,
+        ).getDay();
+
+        const padding = (startDay + 6) % 7; // Lunes como inicio
+
+        const paddedDates = [...Array(padding).fill(null), ...monthDates];
+
         return (
-          <View key={monthKey} style={{ marginRight: 20 }}>
-            {/* 🔥 Título del mes */}
+          <View key={monthKey} style={{ marginRight: 24 }}>
             <Text
               style={{
                 color: "white",
                 fontSize: 12,
                 marginBottom: 8,
-                textTransform: "capitalize",
                 opacity: 0.7,
+                textTransform: "capitalize",
               }}
             >
               {monthName}
             </Text>
 
-            <View style={{ flexDirection: "row" }}>
-              {monthWeeks.map((week, i) => (
-                <View key={i}>
-                  {week.map((date) => {
-                    const iso = date.toISOString().split("T")[0];
-                    const completed = isCompleted(date);
-
-                    return (
-                      <AnimatedCell
-                        key={iso}
-                        date={date}
-                        completed={completed}
-                        onPress={() => onToggle(iso)}
-                      />
-                    );
-                  })}
-                </View>
-              ))}
+            <View
+              style={{ flexDirection: "row", flexWrap: "wrap", width: 196 }}
+            >
+              {paddedDates.map((date, i) =>
+                date ? (
+                  <AnimatedCell
+                    key={date.toISOString()}
+                    date={date}
+                    completed={isCompleted(date)}
+                    onPress={() => onToggle(date.toISOString().split("T")[0])}
+                  />
+                ) : (
+                  <View
+                    key={`empty-${i}`}
+                    style={{
+                      width: 28,
+                      height: 28,
+                      margin: 3,
+                    }}
+                  />
+                ),
+              )}
             </View>
           </View>
         );
@@ -125,11 +136,7 @@ function AnimatedCell({
             borderRadius: 6,
             justifyContent: "center",
             alignItems: "center",
-
-            // 🌿 Verde suave cuando está completado
             backgroundColor: completed ? "rgba(34,197,94,0.25)" : "#2c2c2e",
-
-            // 🔵 Borde azul si es hoy
             borderWidth: isToday ? 1.5 : 0,
             borderColor: isToday ? "#3B82F6" : "transparent",
           },
@@ -140,9 +147,7 @@ function AnimatedCell({
           style={{
             fontSize: 11,
             fontWeight: "500",
-            color: completed
-              ? "#d1fae5" // verde claro
-              : "#6b7280", // gris medio
+            color: completed ? "#d1fae5" : "#6b7280",
           }}
         >
           {date.getDate()}

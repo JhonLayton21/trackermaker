@@ -1,16 +1,22 @@
 import { Habit } from "@/types/habit";
 import { calculateStreak } from "@/utils/date";
+import * as Haptics from "expo-haptics";
 import { Pressable, ScrollView, Text, View } from "react-native";
-import { Swipeable } from "react-native-gesture-handler";
 import HabitGrid from "./HabitGrid";
 
 type Props = {
   habit: Habit;
   onUpdate: (habit: Habit) => void;
   onDelete: (id: string) => void;
+  onLongPress?: (habit: Habit) => void; // 👈 nuevo
 };
 
-export default function HabitCard({ habit, onUpdate, onDelete }: Props) {
+export default function HabitCard({
+  habit,
+  onUpdate,
+  onDelete,
+  onLongPress,
+}: Props) {
   const streak = calculateStreak(habit.records);
 
   const toggleDate = (date: string) => {
@@ -26,26 +32,14 @@ export default function HabitCard({ habit, onUpdate, onDelete }: Props) {
     onUpdate(updatedHabit);
   };
 
-  const renderRightActions = () => {
-    return (
-      <Pressable
-        onPress={() => onDelete(habit.id)}
-        style={{
-          backgroundColor: "#ef4444",
-          justifyContent: "center",
-          alignItems: "center",
-          width: 100,
-          borderRadius: 12,
-          marginVertical: 15,
-        }}
-      >
-        <Text style={{ color: "white", fontWeight: "600" }}>Eliminar</Text>
-      </Pressable>
-    );
-  };
-
   return (
-    <Swipeable renderRightActions={renderRightActions}>
+    <Pressable
+      onLongPress={async () => {
+        await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+        onLongPress?.(habit);
+      }}
+      delayLongPress={300}
+    >
       <View
         style={{
           marginVertical: 15,
@@ -87,6 +81,6 @@ export default function HabitCard({ habit, onUpdate, onDelete }: Props) {
           <HabitGrid records={habit.records} onToggle={toggleDate} />
         </ScrollView>
       </View>
-    </Swipeable>
+    </Pressable>
   );
 }
