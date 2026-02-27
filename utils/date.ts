@@ -40,7 +40,13 @@ export function calculateStreak(records: string[]) {
   if (!records.length) return 0;
 
   const sorted = [...records].sort().reverse();
-  let streak = 0;
+
+  const toLocalISO = (date: Date) => {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, "0");
+    const d = String(date.getDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
+  };
 
   const today = new Date();
   let current = new Date(
@@ -49,9 +55,22 @@ export function calculateStreak(records: string[]) {
     today.getDate(),
   );
 
-  while (true) {
-    const iso = current.toISOString().split("T")[0];
+  // Si ni hoy ni ayer están marcados, la racha es 0
+  const todayISO = toLocalISO(current);
+  const yesterday = new Date(current);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterdayISO = toLocalISO(yesterday);
 
+  if (!sorted.includes(todayISO) && !sorted.includes(yesterdayISO)) return 0;
+
+  // Si hoy no está marcado pero ayer sí, empezamos desde ayer
+  if (!sorted.includes(todayISO)) {
+    current = yesterday;
+  }
+
+  let streak = 0;
+  while (true) {
+    const iso = toLocalISO(current);
     if (sorted.includes(iso)) {
       streak++;
       current.setDate(current.getDate() - 1);
