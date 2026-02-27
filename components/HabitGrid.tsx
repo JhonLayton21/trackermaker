@@ -136,7 +136,7 @@ function AnimatedCell({
             borderRadius: 6,
             justifyContent: "center",
             alignItems: "center",
-            backgroundColor: completed ? "rgba(34,197,94,0.25)" : "#2c2c2e",
+            backgroundColor: completed ? "`rgba(34, 197, 94, 1)`" : "#2c2c2e",
             borderWidth: isToday ? 1.5 : 0,
             borderColor: isToday ? "#3B82F6" : "transparent",
           },
@@ -147,7 +147,7 @@ function AnimatedCell({
           style={{
             fontSize: 11,
             fontWeight: "500",
-            color: completed ? "#d1fae5" : "#6b7280",
+            color: completed ? "#06532b" : "#6b7280",
           }}
         >
           {date.getDate()}
