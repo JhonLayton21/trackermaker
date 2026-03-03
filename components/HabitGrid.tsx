@@ -1,3 +1,4 @@
+import { useTheme } from "@/context/ThemeContext";
 import { generateSixMonthRange } from "@/utils/date";
 import * as Haptics from "expo-haptics";
 import { Pressable, Text, View } from "react-native";
@@ -13,16 +14,13 @@ type Props = {
 };
 
 export default function HabitGrid({ records, onToggle }: Props) {
+  const { colors, isDark } = useTheme();
   const dates = generateSixMonthRange();
 
-  // 🔥 Agrupar por mes REAL
   const monthsMap: { [key: string]: Date[] } = {};
-
   dates.forEach((date) => {
     const key = `${date.getFullYear()}-${date.getMonth()}`;
-    if (!monthsMap[key]) {
-      monthsMap[key] = [];
-    }
+    if (!monthsMap[key]) monthsMap[key] = [];
     monthsMap[key].push(date);
   });
 
@@ -38,32 +36,26 @@ export default function HabitGrid({ records, onToggle }: Props) {
         const monthName = firstDay.toLocaleString("default", {
           month: "short",
         });
-
-        // 🔥 Padding antes del primer día
         const startDay = new Date(
           firstDay.getFullYear(),
           firstDay.getMonth(),
           1,
         ).getDay();
-
-        const padding = (startDay + 6) % 7; // Lunes como inicio
-
+        const padding = (startDay + 6) % 7;
         const paddedDates = [...Array(padding).fill(null), ...monthDates];
 
         return (
           <View key={monthKey} style={{ marginRight: 24 }}>
             <Text
               style={{
-                color: "white",
+                color: colors.subtext,
                 fontSize: 12,
                 marginBottom: 8,
-                opacity: 0.7,
                 textTransform: "capitalize",
               }}
             >
               {monthName}
             </Text>
-
             <View
               style={{ flexDirection: "row", flexWrap: "wrap", width: 196 }}
             >
@@ -73,16 +65,13 @@ export default function HabitGrid({ records, onToggle }: Props) {
                     key={date.toISOString()}
                     date={date}
                     completed={isCompleted(date)}
+                    isDark={isDark}
                     onPress={() => onToggle(date.toISOString().split("T")[0])}
                   />
                 ) : (
                   <View
                     key={`empty-${i}`}
-                    style={{
-                      width: 28,
-                      height: 28,
-                      margin: 3,
-                    }}
+                    style={{ width: 28, height: 28, margin: 3 }}
                   />
                 ),
               )}
@@ -97,14 +86,15 @@ export default function HabitGrid({ records, onToggle }: Props) {
 function AnimatedCell({
   date,
   completed,
+  isDark,
   onPress,
 }: {
   date: Date;
   completed: boolean;
+  isDark: boolean;
   onPress: () => void;
 }) {
   const scale = useSharedValue(1);
-
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
   }));
@@ -117,13 +107,20 @@ function AnimatedCell({
 
   const handlePress = async () => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-
     scale.value = withSpring(1.2, { damping: 8 }, () => {
       scale.value = withSpring(1);
     });
-
     onPress();
   };
+
+  // Colores de celda según tema y estado
+  const cellBg = completed
+    ? "rgba(34, 197, 94, 1)"
+    : isDark
+      ? "#2c2c2e"
+      : "#e5e7eb";
+
+  const textColor = completed ? "#06532b" : isDark ? "#6b7280" : "#9ca3af";
 
   return (
     <Pressable onPress={handlePress}>
@@ -136,20 +133,14 @@ function AnimatedCell({
             borderRadius: 6,
             justifyContent: "center",
             alignItems: "center",
-            backgroundColor: completed ? "`rgba(34, 197, 94, 1)`" : "#2c2c2e",
+            backgroundColor: cellBg,
             borderWidth: isToday ? 1.5 : 0,
             borderColor: isToday ? "#3B82F6" : "transparent",
           },
           animatedStyle,
         ]}
       >
-        <Text
-          style={{
-            fontSize: 11,
-            fontWeight: "500",
-            color: completed ? "#06532b" : "#6b7280",
-          }}
-        >
+        <Text style={{ fontSize: 11, fontWeight: "500", color: textColor }}>
           {date.getDate()}
         </Text>
       </Animated.View>

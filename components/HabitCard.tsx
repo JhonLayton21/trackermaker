@@ -1,3 +1,4 @@
+import { useTheme } from "@/context/ThemeContext";
 import { Habit } from "@/types/habit";
 import { calculateStreak } from "@/utils/date";
 import * as Haptics from "expo-haptics";
@@ -12,8 +13,7 @@ type Props = {
   onLongPress?: (habit: Habit) => void;
 };
 
-// Ajusta este valor al ancho real de cada mes en tu HabitGrid
-const MONTH_WIDTH = 220; // px por mes (columnas * ancho celda + gaps)
+const MONTH_WIDTH = 220;
 const PAST_MONTHS = 3;
 
 export default function HabitCard({
@@ -22,6 +22,7 @@ export default function HabitCard({
   onDelete,
   onLongPress,
 }: Props) {
+  const { colors } = useTheme();
   const streak = calculateStreak(habit.records);
   const scrollRef = useRef<ScrollView>(null);
 
@@ -48,8 +49,10 @@ export default function HabitCard({
         style={{
           marginVertical: 15,
           padding: 15,
-          backgroundColor: "#111",
+          backgroundColor: colors.surface,
           borderRadius: 12,
+          borderWidth: 1,
+          borderColor: colors.border,
         }}
       >
         <View
@@ -60,14 +63,15 @@ export default function HabitCard({
             marginBottom: 10,
           }}
         >
-          <Text style={{ color: "white", fontSize: 18, fontWeight: "600" }}>
+          <Text style={{ color: colors.text, fontSize: 18, fontWeight: "600" }}>
             {habit.name}
           </Text>
-          <Text style={{ color: "#22c55e", fontSize: 14, fontWeight: "500" }}>
+          <Text
+            style={{ color: colors.accent, fontSize: 14, fontWeight: "500" }}
+          >
             🔥 {streak}
           </Text>
         </View>
-
         <ScrollView
           ref={scrollRef}
           horizontal
