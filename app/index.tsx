@@ -1,6 +1,8 @@
 import AddHabitModal from "@/components/AddHabitModal";
 import DeleteSlider from "@/components/DeleteSlider";
 import HabitCard from "@/components/HabitCard";
+import SettingsScreen from "@/components/SettingsScreen";
+import { useTheme } from "@/context/ThemeContext";
 import { Habit } from "@/types/habit";
 import { loadHabits, saveHabits } from "@/utils/storage";
 import { Ionicons } from "@expo/vector-icons";
@@ -18,10 +20,12 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
 export default function Home() {
+  const { colors } = useTheme();
   const [habits, setHabits] = useState<Habit[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [habitToDelete, setHabitToDelete] = useState<Habit | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
   const slideAnim = useRef(new Animated.Value(SCREEN_WIDTH)).current;
   const insets = useSafeAreaInsets();
 
@@ -43,6 +47,7 @@ export default function Home() {
 
   const openMenu = () => {
     setMenuOpen(true);
+    setShowSettings(false);
     Animated.timing(slideAnim, {
       toValue: 0,
       duration: 300,
@@ -55,11 +60,29 @@ export default function Home() {
       toValue: SCREEN_WIDTH,
       duration: 300,
       useNativeDriver: true,
-    }).start(() => setMenuOpen(false));
+    }).start(() => {
+      setMenuOpen(false);
+      setShowSettings(false);
+    });
   };
 
+  const MENU_ITEMS = [
+    { icon: "home-outline", label: "Inicio", onPress: closeMenu },
+    { icon: "stats-chart-outline", label: "Estadísticas", onPress: () => {} },
+    {
+      icon: "settings-outline",
+      label: "Configuración",
+      onPress: () => setShowSettings(true),
+    },
+    {
+      icon: "information-circle-outline",
+      label: "Acerca de",
+      onPress: () => {},
+    },
+  ];
+
   return (
-    <View style={{ flex: 1, backgroundColor: "#000" }}>
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
       <ScrollView
         contentContainerStyle={{
           padding: 20,
@@ -77,11 +100,7 @@ export default function Home() {
           }}
         >
           <Text
-            style={{
-              fontSize: 24,
-              fontWeight: "bold",
-              color: "white",
-            }}
+            style={{ fontSize: 24, fontWeight: "bold", color: colors.text }}
           >
             Habit Tracker
           </Text>
@@ -89,7 +108,7 @@ export default function Home() {
             onPress={openMenu}
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
-            <Ionicons name="menu" size={28} color="white" />
+            <Ionicons name="menu" size={28} color={colors.text} />
           </TouchableOpacity>
         </View>
 
@@ -103,9 +122,7 @@ export default function Home() {
               );
             }}
             onDelete={deleteHabit}
-            onLongPress={(habit) => {
-              setHabitToDelete(habit);
-            }}
+            onLongPress={(habit) => setHabitToDelete(habit)}
           />
         ))}
       </ScrollView>
@@ -124,10 +141,6 @@ export default function Home() {
           backgroundColor: "#22c55e",
           justifyContent: "center",
           alignItems: "center",
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 5 },
-          shadowOpacity: 0.3,
-          shadowRadius: 5,
           elevation: 6,
         }}
       >
@@ -158,7 +171,7 @@ export default function Home() {
         />
       )}
 
-      {/* Drawer Overlay */}
+      {/* Overlay */}
       {menuOpen && (
         <TouchableOpacity
           activeOpacity={1}
@@ -174,7 +187,7 @@ export default function Home() {
         />
       )}
 
-      {/* Drawer Menu */}
+      {/* Drawer */}
       <Animated.View
         style={{
           position: "absolute",
@@ -182,55 +195,73 @@ export default function Home() {
           bottom: 0,
           right: 0,
           width: SCREEN_WIDTH,
-          backgroundColor: "#111",
+          backgroundColor: colors.surface,
           transform: [{ translateX: slideAnim }],
-          paddingTop: insets.top + 20,
-          paddingHorizontal: 24,
         }}
       >
-        {/* Drawer Header */}
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: 40,
-          }}
-        >
-          <Text style={{ color: "white", fontSize: 20, fontWeight: "bold" }}>
-            Menú
-          </Text>
-          <TouchableOpacity onPress={closeMenu}>
-            <Ionicons name="close" size={28} color="white" />
-          </TouchableOpacity>
-        </View>
-
-        {/* Drawer Items */}
-        {[
-          { icon: "home-outline", label: "Inicio" },
-          { icon: "stats-chart-outline", label: "Estadísticas" },
-          { icon: "settings-outline", label: "Configuración" },
-          { icon: "information-circle-outline", label: "Acerca de" },
-        ].map((item) => (
-          <TouchableOpacity
-            key={item.label}
+        {showSettings ? (
+          <View style={{ flex: 1, paddingTop: insets.top + 20 }}>
+            <SettingsScreen onClose={() => setShowSettings(false)} />
+          </View>
+        ) : (
+          <View
             style={{
-              flexDirection: "row",
-              alignItems: "center",
-              paddingVertical: 16,
-              borderBottomWidth: 1,
-              borderBottomColor: "#222",
+              flex: 1,
+              paddingTop: insets.top + 20,
+              paddingHorizontal: 24,
             }}
           >
-            <Ionicons
-              name={item.icon as any}
-              size={22}
-              color="#22c55e"
-              style={{ marginRight: 16 }}
-            />
-            <Text style={{ color: "white", fontSize: 16 }}>{item.label}</Text>
-          </TouchableOpacity>
-        ))}
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: 40,
+              }}
+            >
+              <Text
+                style={{ color: colors.text, fontSize: 20, fontWeight: "bold" }}
+              >
+                Menú
+              </Text>
+              <TouchableOpacity onPress={closeMenu}>
+                <Ionicons name="close" size={28} color={colors.text} />
+              </TouchableOpacity>
+            </View>
+
+            {MENU_ITEMS.map((item, index) => (
+              <TouchableOpacity
+                key={item.label}
+                onPress={item.onPress}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  paddingVertical: 16,
+                  borderBottomWidth: 1,
+                  borderBottomColor: colors.border,
+                }}
+              >
+                <Ionicons
+                  name={item.icon as any}
+                  size={22}
+                  color={colors.accent}
+                  style={{ marginRight: 16 }}
+                />
+                <Text style={{ color: colors.text, fontSize: 16 }}>
+                  {item.label}
+                </Text>
+                {item.label === "Configuración" && (
+                  <Ionicons
+                    name="chevron-forward"
+                    size={18}
+                    color={colors.subtext}
+                    style={{ marginLeft: "auto" }}
+                  />
+                )}
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
       </Animated.View>
     </View>
   );
