@@ -1,6 +1,6 @@
 import { useTheme } from "@/context/ThemeContext";
 import { Habit } from "@/types/habit";
-import { calculateStreak } from "@/utils/date";
+import { calculateBestStreak, calculateStreak } from "@/utils/date";
 import * as Haptics from "expo-haptics";
 import { useRef } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
@@ -24,6 +24,7 @@ export default function HabitCard({
 }: Props) {
   const { colors } = useTheme();
   const streak = calculateStreak(habit.records);
+  const bestStreak = calculateBestStreak(habit.records);
   const scrollRef = useRef<ScrollView>(null);
 
   const toggleDate = (date: string) => {
@@ -66,11 +67,23 @@ export default function HabitCard({
           <Text style={{ color: colors.text, fontSize: 18, fontWeight: "600" }}>
             {habit.name}
           </Text>
-          <Text
-            style={{ color: colors.accent, fontSize: 14, fontWeight: "500" }}
-          >
-            🔥 {streak}
-          </Text>
+          <View style={{ alignItems: "flex-end" }}>
+            <Text
+              style={{ color: colors.accent, fontSize: 14, fontWeight: "500" }}
+            >
+              🔥 {streak}
+            </Text>
+            <Text
+              style={{
+                color: colors.text,
+                fontSize: 11,
+                opacity: 0.4,
+                marginTop: 2,
+              }}
+            >
+              mejor: {bestStreak}
+            </Text>
+          </View>
         </View>
         <ScrollView
           ref={scrollRef}

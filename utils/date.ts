@@ -91,3 +91,26 @@ export function isToday(date: Date) {
     date.getDate() === today.getDate()
   );
 }
+
+export function calculateBestStreak(records: string[]) {
+  if (!records.length) return 0;
+
+  const sorted = [...records].sort();
+  let best = 1;
+  let current = 1;
+
+  for (let i = 1; i < sorted.length; i++) {
+    const prev = new Date(sorted[i - 1]);
+    const curr = new Date(sorted[i]);
+    const diffDays = (curr.getTime() - prev.getTime()) / (1000 * 60 * 60 * 24);
+
+    if (diffDays === 1) {
+      current++;
+      if (current > best) best = current;
+    } else {
+      current = 1;
+    }
+  }
+
+  return best;
+}
