@@ -17,6 +17,11 @@ export default function AddHabitModal({ visible, onClose, onCreate }: Props) {
     onClose();
   };
 
+  const handleClose = () => {
+    setName("");
+    onClose();
+  };
+
   return (
     <Modal visible={visible} animationType="slide" transparent>
       <View
@@ -34,15 +39,40 @@ export default function AddHabitModal({ visible, onClose, onCreate }: Props) {
             borderRadius: 16,
           }}
         >
-          <Text
+          {/* Header con título e ícono de cierre */}
+          <View
             style={{
-              color: "white",
-              fontSize: 18,
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
               marginBottom: 10,
             }}
           >
-            Nuevo hábito
-          </Text>
+            <Text
+              style={{
+                color: "white",
+                fontSize: 18,
+              }}
+            >
+              Nuevo hábito
+            </Text>
+
+            <Pressable
+              onPress={handleClose}
+              style={({ pressed }) => ({
+                width: 30,
+                height: 30,
+                borderRadius: 15,
+                backgroundColor: pressed ? "#3a3a3c" : "#2c2c2e",
+                justifyContent: "center",
+                alignItems: "center",
+              })}
+            >
+              <Text style={{ color: "#aaa", fontSize: 16, lineHeight: 18 }}>
+                ✕
+              </Text>
+            </Pressable>
+          </View>
 
           <TextInput
             placeholder="Ej: Gimnasio"
