@@ -10,6 +10,7 @@ import { useEffect, useRef, useState } from "react";
 import {
   Animated,
   Dimensions,
+  Linking,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -26,6 +27,7 @@ export default function Home() {
   const [habitToDelete, setHabitToDelete] = useState<Habit | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [showAbout, setShowAbout] = useState(false);
   const slideAnim = useRef(new Animated.Value(SCREEN_WIDTH)).current;
   const insets = useSafeAreaInsets();
 
@@ -48,6 +50,7 @@ export default function Home() {
   const openMenu = () => {
     setMenuOpen(true);
     setShowSettings(false);
+    setShowAbout(false);
     Animated.timing(slideAnim, {
       toValue: 0,
       duration: 300,
@@ -63,12 +66,12 @@ export default function Home() {
     }).start(() => {
       setMenuOpen(false);
       setShowSettings(false);
+      setShowAbout(false);
     });
   };
 
   const MENU_ITEMS = [
     { icon: "home-outline", label: "Inicio", onPress: closeMenu },
-    { icon: "stats-chart-outline", label: "Estadísticas", onPress: () => {} },
     {
       icon: "settings-outline",
       label: "Configuración",
@@ -77,7 +80,7 @@ export default function Home() {
     {
       icon: "information-circle-outline",
       label: "Acerca de",
-      onPress: () => {},
+      onPress: () => setShowAbout(true),
     },
   ];
 
@@ -203,6 +206,89 @@ export default function Home() {
           <View style={{ flex: 1, paddingTop: insets.top + 20 }}>
             <SettingsScreen onClose={() => setShowSettings(false)} />
           </View>
+        ) : showAbout ? (
+          <View
+            style={{
+              flex: 1,
+              paddingTop: insets.top + 20,
+              paddingHorizontal: 24,
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginBottom: 36,
+              }}
+            >
+              <TouchableOpacity
+                onPress={() => setShowAbout(false)}
+                style={{ marginRight: 16 }}
+              >
+                <Ionicons name="arrow-back" size={24} color={colors.text} />
+              </TouchableOpacity>
+              <Text
+                style={{ fontSize: 20, fontWeight: "bold", color: colors.text }}
+              >
+                Acerca de
+              </Text>
+            </View>
+
+            <Text
+              style={{
+                color: colors.text,
+                fontSize: 16,
+                marginBottom: 24,
+                lineHeight: 24,
+              }}
+            >
+              Creado con ❤️ por Jhon Brandon Layton Rodriguez
+            </Text>
+
+            <TouchableOpacity
+              onPress={() => Linking.openURL("https://github.com/JhonLayton21")}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                paddingVertical: 14,
+                borderBottomWidth: 1,
+                borderBottomColor: colors.border,
+              }}
+            >
+              <Ionicons
+                name="logo-github"
+                size={22}
+                color={colors.accent}
+                style={{ marginRight: 14 }}
+              />
+              <Text style={{ color: colors.accent, fontSize: 15 }}>
+                github.com/JhonLayton21
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() =>
+                Linking.openURL("https://www.linkedin.com/in/jhon-layton/")
+              }
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                paddingVertical: 14,
+                borderBottomWidth: 1,
+                borderBottomColor: colors.border,
+              }}
+            >
+              <Ionicons
+                name="logo-linkedin"
+                size={22}
+                color={colors.accent}
+                style={{ marginRight: 14 }}
+              />
+              <Text style={{ color: colors.accent, fontSize: 15 }}>
+                linkedin.com/in/jhon-layton
+              </Text>
+            </TouchableOpacity>
+          </View>
         ) : (
           <View
             style={{
@@ -229,7 +315,7 @@ export default function Home() {
               </TouchableOpacity>
             </View>
 
-            {MENU_ITEMS.map((item, index) => (
+            {MENU_ITEMS.map((item) => (
               <TouchableOpacity
                 key={item.label}
                 onPress={item.onPress}
