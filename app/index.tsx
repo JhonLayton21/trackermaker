@@ -102,7 +102,7 @@ export default function Home() {
           <Text
             style={{ fontSize: 24, fontWeight: "bold", color: colors.text }}
           >
-            Habit Tracker
+            TrackerMaker
           </Text>
           <TouchableOpacity
             onPress={openMenu}
