@@ -8,8 +8,8 @@ import { useState } from "react";
 import { Modal, Pressable, Text, TextInput, View } from "react-native";
 
 type Props = {
-  visible: boolean;              // Modal visible
-  onClose: () => void;           // Callback para cerrar
+  visible: boolean; // Modal visible
+  onClose: () => void; // Callback para cerrar
   onCreate: (name: string) => void; // Callback para crear con nombre
 };
 

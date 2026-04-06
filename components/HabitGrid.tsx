@@ -10,14 +10,14 @@ import { generateSixMonthRange } from "@/utils/date";
 import * as Haptics from "expo-haptics";
 import { Pressable, Text, View } from "react-native";
 import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
+    useAnimatedStyle,
+    useSharedValue,
+    withSpring,
 } from "react-native-reanimated";
 
 type Props = {
-  records: string[];       // Array de fechas ISO completadas ["2026-04-06", ...]
-  onToggle: (date: string) => void;  // Callback cuando se toca una celda
+  records: string[]; // Array de fechas ISO completadas ["2026-04-06", ...]
+  onToggle: (date: string) => void; // Callback cuando se toca una celda
 };
 
 /**
@@ -105,9 +105,9 @@ function AnimatedCell({
   onPress,
 }: {
   date: Date;
-  completed: boolean;        // Si el día está completado
-  isDark: boolean;           // Si está en tema oscuro
-  onPress: () => void;       // Callback cuando se toca
+  completed: boolean; // Si el día está completado
+  isDark: boolean; // Si está en tema oscuro
+  onPress: () => void; // Callback cuando se toca
 }) {
   // Valor animado para el efecto scale/zoom
   const scale = useSharedValue(1);

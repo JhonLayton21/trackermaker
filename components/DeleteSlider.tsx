@@ -19,8 +19,8 @@ import Animated, {
 const { width } = Dimensions.get("window");
 
 type Props = {
-  onConfirm: () => void;  // Callback cuando se confirma eliminación
-  onCancel: () => void;   // Callback cuando se cancela
+  onConfirm: () => void; // Callback cuando se confirma eliminación
+  onCancel: () => void; // Callback cuando se cancela
 };
 
 /**

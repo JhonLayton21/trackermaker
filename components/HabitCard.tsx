@@ -18,10 +18,10 @@ import HabitGrid from "./HabitGrid";
 
 // Props esperados por el componente
 type Props = {
-  habit: Habit;                                // El hábito a mostrar
-  onUpdate: (habit: Habit) => void;            // Callback cuando se actualiza
-  onDelete: (id: string) => void;              // Callback cuando se elimina
-  onLongPress?: (habit: Habit) => void;        // Callback para presión larga
+  habit: Habit; // El hábito a mostrar
+  onUpdate: (habit: Habit) => void; // Callback cuando se actualiza
+  onDelete: (id: string) => void; // Callback cuando se elimina
+  onLongPress?: (habit: Habit) => void; // Callback para presión larga
 };
 
 // Ancho de cada columna de mes

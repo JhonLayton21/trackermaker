@@ -175,9 +175,9 @@ const EMOJI_CATEGORIES = [
 ];
 
 type Props = {
-  visible: boolean;                    // Modal visible
-  onSelect: (emoji: string) => void;   // Callback cuando se selecciona emoji
-  onClose: () => void;                 // Callback para cerrar modal
+  visible: boolean; // Modal visible
+  onSelect: (emoji: string) => void; // Callback cuando se selecciona emoji
+  onClose: () => void; // Callback para cerrar modal
 };
 
 /**

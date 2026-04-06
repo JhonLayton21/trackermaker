@@ -1,6 +1,6 @@
 /**
  * Layout raiz de la aplicación (RootLayout)
- * 
+ *
  * Este componente configura la estructura global:
  * - GestureHandlerRootView: Habilita gestos nativos (swipe, pan, etc.)
  * - SafeAreaProvider: Maneja áreas seguras (notches, etc.)

@@ -10,7 +10,7 @@ import { Text, TouchableOpacity, View } from "react-native";
 import { ThemeMode, useTheme } from "../context/ThemeContext";
 
 interface SettingsScreenProps {
-  onClose: () => void;  // Callback para cerrar la pantalla
+  onClose: () => void; // Callback para cerrar la pantalla
 }
 
 /**

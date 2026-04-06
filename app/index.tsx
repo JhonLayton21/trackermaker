@@ -1,6 +1,6 @@
 /**
  * PANTALLA PRINCIPAL (HOME)
- * 
+ *
  * Esta es la pantalla raiz de la aplicación que muestra:
  * - Título y botón de menú
  * - Lista de hábitos del usuario (HabitCard)
@@ -41,19 +41,19 @@ const { width: SCREEN_WIDTH } = Dimensions.get("window");
  */
 export default function Home() {
   const { colors } = useTheme();
-  
+
   // ===== ESTADO =====
-  const [habits, setHabits] = useState<Habit[]>([]);           // Array de hábitos
-  const [modalVisible, setModalVisible] = useState(false);      // Modal para crear hábito
+  const [habits, setHabits] = useState<Habit[]>([]); // Array de hábitos
+  const [modalVisible, setModalVisible] = useState(false); // Modal para crear hábito
   const [habitToDelete, setHabitToDelete] = useState<Habit | null>(null); // Hábito seleccionado para eliminar
-  const [menuOpen, setMenuOpen] = useState(false);              // Menú lateral abierto
-  const [showSettings, setShowSettings] = useState(false);      // Panel de configuración visible
-  const [showAbout, setShowAbout] = useState(false);            // Panel "Acerca de" visible
+  const [menuOpen, setMenuOpen] = useState(false); // Menú lateral abierto
+  const [showSettings, setShowSettings] = useState(false); // Panel de configuración visible
+  const [showAbout, setShowAbout] = useState(false); // Panel "Acerca de" visible
   const slideAnim = useRef(new Animated.Value(SCREEN_WIDTH)).current; // Animación del drawer
-  const insets = useSafeAreaInsets();                           // Márgenes de área segura
+  const insets = useSafeAreaInsets(); // Márgenes de área segura
 
   // ===== CICLO DE VIDA =====
-  
+
   /**
    * Al montar el componente, carga los hábitos guardados del almacenamiento
    */

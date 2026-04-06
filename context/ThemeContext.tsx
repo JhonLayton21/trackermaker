@@ -15,12 +15,12 @@ export type ThemeMode = "light" | "dark" | "automatic";
  * Cada tema (light/dark) tiene su propia paleta de colores
  */
 export interface ThemeColors {
-  background: string;  // Color de fondo principal
-  surface: string;     // Color de superficies (tarjetas)
-  border: string;      // Color de bordes
-  text: string;        // Color de texto principal
-  subtext: string;     // Color de texto secundario (labels)
-  accent: string;      // Color de acento (verde #22c55e)
+  background: string; // Color de fondo principal
+  surface: string; // Color de superficies (tarjetas)
+  border: string; // Color de bordes
+  text: string; // Color de texto principal
+  subtext: string; // Color de texto secundario (labels)
+  accent: string; // Color de acento (verde #22c55e)
 }
 
 // Paleta de colores para tema claro
