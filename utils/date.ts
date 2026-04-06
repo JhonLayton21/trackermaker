@@ -1,7 +1,7 @@
 export function generateSixMonthRange() {
   const today = new Date();
-  const start = new Date(today.getFullYear(), today.getMonth() - 3, 1);
-  const end = new Date(today.getFullYear(), today.getMonth() + 4, 0);
+  const start = new Date(today.getFullYear(), 0, 1); // 1 de enero
+  const end = new Date(today.getFullYear(), 11, 31); // 31 de diciembre
 
   const dates: Date[] = [];
   const current = new Date(start);
