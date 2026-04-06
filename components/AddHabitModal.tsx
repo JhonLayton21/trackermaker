@@ -1,15 +1,27 @@
+/**
+ * MODAL PARA CREAR NUEVO HÁBITO
+ * Muestra un modal con input de texto para el nombre del nuevo hábito
+ * Validación: no permite nombres vacíos
+ */
+
 import { useState } from "react";
 import { Modal, Pressable, Text, TextInput, View } from "react-native";
 
 type Props = {
-  visible: boolean;
-  onClose: () => void;
-  onCreate: (name: string) => void;
+  visible: boolean;              // Modal visible
+  onClose: () => void;           // Callback para cerrar
+  onCreate: (name: string) => void; // Callback para crear con nombre
 };
 
+/**
+ * Modal para crear un nuevo hábito
+ */
 export default function AddHabitModal({ visible, onClose, onCreate }: Props) {
   const [name, setName] = useState("");
 
+  /**
+   * Crea el nuevo hábito si el nombre no está vacío
+   */
   const handleCreate = () => {
     if (!name.trim()) return;
     onCreate(name.trim());
@@ -17,6 +29,9 @@ export default function AddHabitModal({ visible, onClose, onCreate }: Props) {
     onClose();
   };
 
+  /**
+   * Cierra el modal sin crear nada
+   */
   const handleClose = () => {
     setName("");
     onClose();

@@ -1,18 +1,33 @@
+/**
+ * PANTALLA DE CONFIGURACIÓN
+ * Permite cambiar el tema de la aplicación
+ * Opciones: Claro, Automático (sigue sistema), Oscuro
+ */
+
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { ThemeMode, useTheme } from "../context/ThemeContext";
 
 interface SettingsScreenProps {
-  onClose: () => void;
+  onClose: () => void;  // Callback para cerrar la pantalla
 }
 
+/**
+ * Opciones de tema disponibles con su ícono
+ */
 const THEME_OPTIONS: { mode: ThemeMode; label: string; icon: string }[] = [
   { mode: "light", label: "Claro", icon: "sunny-outline" },
   { mode: "automatic", label: "Automático", icon: "contrast-outline" },
   { mode: "dark", label: "Oscuro", icon: "moon-outline" },
 ];
 
+/**
+ * Pantalla de configuración de tema e interfaz
+ */
+/**
+ * Pantalla de configuración de tema e interfaz
+ */
 export default function SettingsScreen({ onClose }: SettingsScreenProps) {
   const { mode, setMode, colors } = useTheme();
 

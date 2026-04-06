@@ -1,3 +1,10 @@
+/**
+ * GRID DE FECHAS MENSUAL
+ * Renderiza el calendario de 12 meses (año natural) donde cada celda representa un día
+ * Los días completados se muestran en verde, hoy tiene borde azul
+ * Al tocar una celda se ejecuta la animación spring y se actualiza el registro
+ */
+
 import { useTheme } from "@/context/ThemeContext";
 import { generateSixMonthRange } from "@/utils/date";
 import * as Haptics from "expo-haptics";
@@ -9,14 +16,19 @@ import Animated, {
 } from "react-native-reanimated";
 
 type Props = {
-  records: string[];
-  onToggle: (date: string) => void;
+  records: string[];       // Array de fechas ISO completadas ["2026-04-06", ...]
+  onToggle: (date: string) => void;  // Callback cuando se toca una celda
 };
 
+/**
+ * Renderiza un grid con todos los meses del año natural
+ */
 export default function HabitGrid({ records, onToggle }: Props) {
   const { colors, isDark } = useTheme();
+  // Genera array de fechas para todo el año natural
   const dates = generateSixMonthRange();
 
+  // Agrupa fechas por mes para renderizar por columnas
   const monthsMap: { [key: string]: Date[] } = {};
   dates.forEach((date) => {
     const key = `${date.getFullYear()}-${date.getMonth()}`;
@@ -24,6 +36,9 @@ export default function HabitGrid({ records, onToggle }: Props) {
     monthsMap[key].push(date);
   });
 
+  /**
+   * Verifica si una fecha está en el registro de completados
+   */
   const isCompleted = (date: Date) => {
     const iso = date.toISOString().split("T")[0];
     return records.includes(iso);
@@ -90,23 +105,32 @@ function AnimatedCell({
   onPress,
 }: {
   date: Date;
-  completed: boolean;
-  isDark: boolean;
-  onPress: () => void;
+  completed: boolean;        // Si el día está completado
+  isDark: boolean;           // Si está en tema oscuro
+  onPress: () => void;       // Callback cuando se toca
 }) {
+  // Valor animado para el efecto scale/zoom
   const scale = useSharedValue(1);
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
   }));
 
+  // Verifica si esta celda es hoy
   const today = new Date();
   const isToday =
     date.getFullYear() === today.getFullYear() &&
     date.getMonth() === today.getMonth() &&
     date.getDate() === today.getDate();
 
+  /**
+   * Maneja el toque en la celda:
+   * - Vibración háptica (feedback táctil)
+   * - Animación spring de zoom
+   * - Actualiza el registro por callback
+   */
   const handlePress = async () => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    // Anima el zoom con spring (1 -> 1.2 -> 1)
     scale.value = withSpring(1.2, { damping: 8 }, () => {
       scale.value = withSpring(1);
     });

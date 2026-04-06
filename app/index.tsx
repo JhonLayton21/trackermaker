@@ -1,3 +1,17 @@
+/**
+ * PANTALLA PRINCIPAL (HOME)
+ * 
+ * Esta es la pantalla raiz de la aplicación que muestra:
+ * - Título y botón de menú
+ * - Lista de hábitos del usuario (HabitCard)
+ * - Botón flotante (FAB) para crear nuevo hábito
+ * - Modal para añadir hábito
+ * - Slider para confirmar eliminación
+ * - Menú lateral (drawer) con navegación
+ * - Pantalla de configuración de tema
+ * - Sección de "Acerca de"
+ */
+
 import AddHabitModal from "@/components/AddHabitModal";
 import DeleteSlider from "@/components/DeleteSlider";
 import HabitCard from "@/components/HabitCard";
@@ -18,19 +32,31 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+// Ancho de la pantalla (utilizado para el drawer)
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
+/**
+ * Componente principal de la aplicación
+ * Gestiona el estado de hábitos, modales, y navegación
+ */
 export default function Home() {
   const { colors } = useTheme();
-  const [habits, setHabits] = useState<Habit[]>([]);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [habitToDelete, setHabitToDelete] = useState<Habit | null>(null);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
-  const [showAbout, setShowAbout] = useState(false);
-  const slideAnim = useRef(new Animated.Value(SCREEN_WIDTH)).current;
-  const insets = useSafeAreaInsets();
+  
+  // ===== ESTADO =====
+  const [habits, setHabits] = useState<Habit[]>([]);           // Array de hábitos
+  const [modalVisible, setModalVisible] = useState(false);      // Modal para crear hábito
+  const [habitToDelete, setHabitToDelete] = useState<Habit | null>(null); // Hábito seleccionado para eliminar
+  const [menuOpen, setMenuOpen] = useState(false);              // Menú lateral abierto
+  const [showSettings, setShowSettings] = useState(false);      // Panel de configuración visible
+  const [showAbout, setShowAbout] = useState(false);            // Panel "Acerca de" visible
+  const slideAnim = useRef(new Animated.Value(SCREEN_WIDTH)).current; // Animación del drawer
+  const insets = useSafeAreaInsets();                           // Márgenes de área segura
 
+  // ===== CICLO DE VIDA =====
+  
+  /**
+   * Al montar el componente, carga los hábitos guardados del almacenamiento
+   */
   useEffect(() => {
     const init = async () => {
       const stored = await loadHabits();
@@ -39,14 +65,25 @@ export default function Home() {
     init();
   }, []);
 
+  /**
+   * Cada vez que cambia el estado de hábitos, guarda los cambios en AsyncStorage
+   */
   useEffect(() => {
     saveHabits(habits);
   }, [habits]);
 
+  // ===== FUNCIONES =====
+
+  /**
+   * Elimina un hábito del array por ID
+   */
   const deleteHabit = (id: string) => {
     setHabits((prev) => prev.filter((h) => h.id !== id));
   };
 
+  /**
+   * Abre el menú lateral con animación deslizante
+   */
   const openMenu = () => {
     setMenuOpen(true);
     setShowSettings(false);
@@ -58,6 +95,9 @@ export default function Home() {
     }).start();
   };
 
+  /**
+   * Cierra el menú lateral con animación deslizante
+   */
   const closeMenu = () => {
     Animated.timing(slideAnim, {
       toValue: SCREEN_WIDTH,

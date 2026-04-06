@@ -1,3 +1,12 @@
+/**
+ * TARJETA DE HÁBITO INDIVIDUAL
+ * Componente que renderiza un hábito con:
+ * - Emoji y nombre del hábito (presionar emoji = cambiar emoji)
+ * - Racha actual y mejor racha histórica
+ * - Grid de 12 meses de progreso (scroll horizontal)
+ * - Interacción: presión larga para seleccionar y eliminar
+ */
+
 import { useTheme } from "@/context/ThemeContext";
 import { Habit } from "@/types/habit";
 import { calculateBestStreak, calculateStreak } from "@/utils/date";
@@ -7,16 +16,21 @@ import { Pressable, ScrollView, Text, View } from "react-native";
 import EmojiPickerModal from "./EmojiPickerModal";
 import HabitGrid from "./HabitGrid";
 
+// Props esperados por el componente
 type Props = {
-  habit: Habit;
-  onUpdate: (habit: Habit) => void;
-  onDelete: (id: string) => void;
-  onLongPress?: (habit: Habit) => void;
+  habit: Habit;                                // El hábito a mostrar
+  onUpdate: (habit: Habit) => void;            // Callback cuando se actualiza
+  onDelete: (id: string) => void;              // Callback cuando se elimina
+  onLongPress?: (habit: Habit) => void;        // Callback para presión larga
 };
 
+// Ancho de cada columna de mes
 const MONTH_WIDTH = 220;
 const PAST_MONTHS = 3;
 
+/**
+ * Renderiza una tarjeta individual de hábito con su grid de progreso
+ */
 export default function HabitCard({
   habit,
   onUpdate,
@@ -24,11 +38,16 @@ export default function HabitCard({
   onLongPress,
 }: Props) {
   const { colors } = useTheme();
+  // Calcula la racha actual y mejor racha
   const streak = calculateStreak(habit.records);
   const bestStreak = calculateBestStreak(habit.records);
   const scrollRef = useRef<ScrollView>(null);
+  // Modal para cambiar emoji del hábito
   const [emojiPickerVisible, setEmojiPickerVisible] = useState(false);
 
+  /**
+   * Alterna un día (lo marca/desmarca) en el registro del hábito
+   */
   const toggleDate = (date: string) => {
     const exists = habit.records.includes(date);
     onUpdate({
@@ -39,6 +58,9 @@ export default function HabitCard({
     });
   };
 
+  /**
+   * Callback cuando se selecciona un emoji del picker
+   */
   const handleEmojiSelect = (emoji: string) => {
     onUpdate({ ...habit, emoji });
   };

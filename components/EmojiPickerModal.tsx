@@ -1,6 +1,16 @@
+/**
+ * SELECTOR DE EMOJIS
+ * Modal para seleccionar emojis categorizados
+ * Permite personalizar el emoji de un hábito con 8 categorías diferentes
+ */
+
 import { useTheme } from "@/context/ThemeContext";
 import { Modal, Pressable, ScrollView, Text, View } from "react-native";
 
+/**
+ * Categorías de emojis organizadas por tipo
+ * Facilita encontrar y seleccionar emojis relevantes por tema
+ */
 const EMOJI_CATEGORIES = [
   {
     label: "Ejercicio",
@@ -165,11 +175,14 @@ const EMOJI_CATEGORIES = [
 ];
 
 type Props = {
-  visible: boolean;
-  onSelect: (emoji: string) => void;
-  onClose: () => void;
+  visible: boolean;                    // Modal visible
+  onSelect: (emoji: string) => void;   // Callback cuando se selecciona emoji
+  onClose: () => void;                 // Callback para cerrar modal
 };
 
+/**
+ * Modal con selector de emojis por categorías
+ */
 export default function EmojiPickerModal({
   visible,
   onSelect,
